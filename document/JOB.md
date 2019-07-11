@@ -1,5 +1,14 @@
 任务分工
+子系统1为显示船舶轨迹，船舶在指定的站位（或者探空仪code）放置的气球，显示每个气球的连续的观测数据。
+站位之前是离散的。
+ballonModel中的linecode与shipmodel中的对应字段关联，
+balloncode与shipmodel中的对应字段关联
+大体orm模型如下：
+![avatar](/document/img/20190711002.png)
+![avatar](/document/img/20190711003.png)
 
+后端接口遵循restfulapi规范
+![avatar](/document/img/111.png)
 <table>
   <thead>
     <tr>

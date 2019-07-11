@@ -28,10 +28,10 @@
 
 </code></pre>
 
-[前端项目说明](webclient\README.md)
-[后端项目说明](webserver\README.md)
-[进度安排](document\SCHEDULE.md)
-
+[前端项目说明](webclient\README.md)  
+[后端项目说明](webserver\README.md)  
+[进度安排](document\SCHEDULE.md)  
+[任务分工](document/JOB.md)
 ---
 
 后端 by [xz]()
