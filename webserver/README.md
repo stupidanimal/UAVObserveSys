@@ -36,7 +36,7 @@ balloonCode:探空仪唯一id<br>
 ````json
 {
     "balloonCode":"15188603",
-    "lineCode":null,
+    "lineCode":"1",
     "balloons":[
         {
             "lineCode":"1",
