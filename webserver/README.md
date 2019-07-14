@@ -1,7 +1,7 @@
-##接口文档
-###1.获取所有航次信息
+## 接口文档
+### 1.获取所有航次信息
 待定
-###2.根据航次lineCode获取所有站位信息
+### 2.根据航次lineCode获取所有站位信息
 url地址:http://localhost:60888/ship_location?lineCode=1 <br>
 入参<br>
 lineCode:string:航次id，唯一<br>
@@ -28,7 +28,7 @@ lineCode:string:航次id，唯一<br>
     ]
 }
 ````
-###3.根据探空仪编号balloonCode获取所有观察信息(分钟维度，每分钟第一条)
+### 3.根据探空仪编号balloonCode获取所有观察信息(分钟维度，每分钟第一条)
 url地址:http://localhost:60888/balloon?balloonCode=15188603<br>
 入参<br>
 balloonCode:探空仪唯一id<br>
@@ -85,4 +85,4 @@ balloonCode:探空仪唯一id<br>
     ]
 }
 ````
-###4.根据探空仪编号balloonCode及分钟顺序编号，获取某一分钟内的60条秒级数据
+### 4.根据探空仪编号balloonCode及分钟顺序编号，获取某一分钟内的60条秒级数据
