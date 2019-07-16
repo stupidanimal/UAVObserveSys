@@ -4,11 +4,15 @@
       <div class="block" v-bind:style="{height:style.height+'px'}">
         <MapComp></MapComp>
       </div>
+      <div class="condMenu">
+        <MapCond></MapCond>
+      </div>
     </el-col>
   </el-row>
 </template>
 <script>
 import MapComp from "./components/MapComp";
+import MapCond from "./components/MapCond";
 export default {
   data() {
     return {
@@ -18,7 +22,8 @@ export default {
     };
   },
   components: {
-    MapComp
+    MapComp,
+    MapCond
   },
   mounted() {
     let height = window.innerHeight;
@@ -34,6 +39,19 @@ export default {
 .block {
   height: 80%;
   background: pink;
+}
+.condMenu {
+  position: absolute;
+  top: 5%;
+  right: 1%;
+  background: lightseagreen;
+
+  z-index: 500;
+  opacity: 0.3;
+  transition: 0.3s;
+}
+.condMenu:hover {
+  opacity: 1;
 }
 </style>
 
