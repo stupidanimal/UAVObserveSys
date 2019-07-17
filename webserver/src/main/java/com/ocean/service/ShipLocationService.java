@@ -26,4 +26,13 @@ public class ShipLocationService {
         Query query = new Query(Criteria.where("lineCode").is(lCode));
         return mongoTemplate.find(query,ShipLocationVo.class);
     }
+
+    public List<String> findAllLineCode(){
+        com.mongodb.client.DistinctIterable<String> result = mongoTemplate.getCollection("ship_location").distinct("lineCode",String.class);
+        List<String> list = new java.util.ArrayList<String>();
+        for(String code: result){
+            list.add(code);
+        }
+        return list;
+    }
 }
