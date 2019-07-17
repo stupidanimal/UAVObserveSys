@@ -9,86 +9,57 @@
       @update:zoom="zoomUpdate"
     >
       <l-tile-layer :url="url" :attribution="attribution" />
-      <l-marker :lat-lng="withPopup">
-        <l-popup>
-          <div @click="innerClick">
-            I am a popup
-            <p v-show="showParagraph">Nothing more</p>
-          </div>
-        </l-popup>
-      </l-marker>
-      <l-marker :lat-lng="withTooltip">
-        <l-tooltip :options="{ permanent: true, interactive: true }">
-          <div @click="innerClick">
-            I am a tooltip
-            <p v-show="showParagraph">Nothing More</p>
-          </div>
-        </l-tooltip>
-      </l-marker>
-
       <l-circle
         v-for="(circle,index) in circles"
         :lat-lng="circle.center"
         :radius="circle.radius"
         :color="circle.color"
         :fillColor="circle.color"
-        :click="circleClick"
         v-bind:key="index"
       ></l-circle>
-
-      <l-polyline :lat-lngs="points" :color="lineColor" :click="lineClick"></l-polyline>
+      <l-polyline :lat-lngs="points" :color="lineColor"></l-polyline>
     </l-map>
   </div>
 </template>
-
 <script>
 import { latLng } from "leaflet";
 import {
   LMap,
   LTileLayer,
-  LMarker,
-  LPopup,
-  LTooltip,
-  LCircle,
+  // LMarker,
+  // LPopup,
+  // LTooltip,
+  LCircleMarker,
   LPolyline
 } from "vue2-leaflet";
 import "leaflet/dist/leaflet.css";
-import { setTimeout } from "timers";
+// import { setTimeout } from "timers";
 import { getBalloonDataByBalloonCode } from "@/api";
+
 export default {
-  name: "Example",
-  components: {
-    "l-map": LMap,
-    "l-tile-layer": LTileLayer,
-    "l-marker": LMarker,
-    "l-popup": LPopup,
-    "l-tooltip": LTooltip,
-    "l-circle": LCircle,
-    "l-polyline": LPolyline
-  },
   data() {
     return {
-      zoom: 9,
-      center: latLng(39.89758, 116.393763),
+      zoom: 8,
+      currentZoom: 10,
+      center: latLng(104.51253, -7.5053),
       url: "http://{s}.tile.osm.org/{z}/{x}/{y}.png",
-      withPopup: latLng(47.41322, -1.219482),
-      withTooltip: latLng(47.41422, -1.250482),
-      currentZoom: 4,
-      currentCenter: latLng(47.41322, -1.219482),
-      circleCenter: latLng(39.89758, 116.393763),
-      showParagraph: false,
       mapOptions: {
         zoomSnap: 0.5
       },
-      allPoints: [],
-      points: [],
-      pointNum: 20,
-      circleColor: "red",
-      circleRadius: 200,
+      circleColor: "#FF9900",
+      circleFillColor: "#FF9900",
+      circleRadius: 5,
       circles: [],
-      lineColor: "gray",
+      points: [],
+      lineColor: "#FFFF00",
       balloonCode: "15188603"
     };
+  },
+  components: {
+    "l-tile-layer": LTileLayer,
+    "l-map": LMap,
+    "l-circle": LCircleMarker,
+    "l-polyline": LPolyline
   },
   methods: {
     zoomUpdate(zoom) {
@@ -97,85 +68,51 @@ export default {
     centerUpdate(center) {
       this.currentCenter = center;
     },
-    showLongText() {
-      this.showParagraph = !this.showParagraph;
-    },
-    lineClick() {
-      alert("this is line");
-    },
-    circleClick() {
-      alert("this is circle");
-    },
-    getRand(scale) {
-      return Math.random() * scale;
-    },
-    innerClick() {
-      alert("Click!");
-    },
-    generatePoints() {
-      let i = this.pointNum,
-        points = [];
-      let baselan = 39.897,
-        baselat = 116.393763;
-      for (; i >= 0; i--) {
-        points.push([
-          baselan + (1 * this.getRand(20)) / 100 - 0.005,
-          baselat + (1 * this.getRand(20)) / 100 - 0.005
-        ]);
-      }
-      this.allPoints = points;
-    },
-    generateCircles() {
-      let circles = [];
-      for (let i in this.points) {
-        circles.push({
-          center: this.points[i],
-          color: this.circleColor,
-          radius: this.circleRadius
-        });
-      }
-      this.circles = circles;
+    drawPoints(data) {
+      //画点方法
+      let bArr = data.balloons;
+      bArr = bArr.sort(x => x.timeStamp);
+      let n = 0;
+      let app = this;
+
+      //递归延时顺序画点 //如果不需要完全可以直接画全部
+      let drawPoint = function() {
+        if (n < bArr.length) {
+          let p = bArr[n];
+          app.points.push(p.point);
+          app.circles.push({
+            center: p.point,
+            color: app.circleColor,
+            radius: app.circleRadius
+          });
+          n++;
+          setTimeout(drawPoint, 500);
+        }
+      };
+      drawPoint();
     },
     getBalloonData() {
       let app = this;
       getBalloonDataByBalloonCode(app.balloonCode)
         .then(res => {
-          alert(JSON.stringify(res));
+          let data = res.data;
+          //画点
+          app.drawPoints(data);
         })
         .catch(err => {
           alert(JSON.stringify(err));
         });
     }
   },
-  drawDemo() {
-    let num = 0;
-    this.generatePoints();
-    let app = this;
-
-    let writePoint = function() {
-      if (num > app.allPoints.length) {
-        return false;
-      } else {
-        num++;
-        app.points = app.allPoints.slice(0, num);
-        app.generateCircles();
-        setTimeout(writePoint, 1000);
-      }
-    };
-    writePoint();
-  },
-  watch: {
-    // points() {
-    //   this.generatePoints();
-    // }
-  },
   mounted() {
     this.getBalloonData();
   }
 };
 </script>
-<style>
+<style scoped>
 .map-simple-main {
   height: 100%;
 }
 </style>
+
+

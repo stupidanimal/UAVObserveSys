@@ -3,9 +3,9 @@
     <el-container>
       <el-header>
         <el-menu class="el-menu-demo" mode="horizontal" router>
-          <el-menu-item>
-            <el-image src="../public/Icon.png"></el-image>
-          </el-menu-item>
+          <!-- <el-menu-item>
+            <el-image :src="'./assets/icon.png'"></el-image>
+          </el-menu-item>-->
           <el-menu-item index="/map">Map</el-menu-item>
           <el-menu-item index="/page1">Menu1</el-menu-item>
           <el-menu-item index="/page2">Menu2</el-menu-item>
