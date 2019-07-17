@@ -6,11 +6,11 @@
       </div>
       <div>
         <!-- <el-form-item label="活动区域"> -->
-        <el-select placeholder="请选择航次">
+        <el-select placeholder="请选择航次" v-model="selectedLineCode">
           <el-option
             v-for="(linecode,index) in lineCodeList"
-            label="linecode"
-            value="linecode"
+            :label="linecode"
+            :value="linecode"
             v-bind:key="index"
           ></el-option>
         </el-select>
@@ -21,22 +21,22 @@
 </template>
 <script>
 import { getLineCodeCollection } from "@/api";
+
 export default {
   data() {
     return {
-      lineCodeList: []
+      lineCodeList: [],
+      selectedLineCode: ""
     };
   },
   mounted() {
     let app = this;
     getLineCodeCollection()
       .then(res => {
-        this.lineCodeList = res;
-        alert(JSON.stringify(res));
+        this.lineCodeList = res.data;
       })
-      .catch(err => {
+      .catch(() => {
         app.lineCodeList = [];
-        alert(JSON.stringify(err));
       });
   }
 };

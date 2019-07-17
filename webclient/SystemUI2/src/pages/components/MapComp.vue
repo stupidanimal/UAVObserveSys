@@ -26,12 +26,6 @@
         </l-tooltip>
       </l-marker>
 
-      <!-- <l-circle
-        :lat-lng="circleCenter"
-        :radius="500"
-        :color="circleColors.color"
-        :fillColor="circleColors.fillColor"
-      ></l-circle>-->
       <l-circle
         v-for="(circle,index) in circles"
         :lat-lng="circle.center"
@@ -60,6 +54,7 @@ import {
 } from "vue2-leaflet";
 import "leaflet/dist/leaflet.css";
 import { setTimeout } from "timers";
+import { getBalloonDataByBalloonCode } from "@/api";
 export default {
   name: "Example",
   components: {
@@ -91,7 +86,8 @@ export default {
       circleColor: "red",
       circleRadius: 200,
       circles: [],
-      lineColor: "gray"
+      lineColor: "gray",
+      balloonCode: "15188603"
     };
   },
   methods: {
@@ -139,14 +135,19 @@ export default {
         });
       }
       this.circles = circles;
+    },
+    getBalloonData() {
+      let app = this;
+      getBalloonDataByBalloonCode(app.balloonCode)
+        .then(res => {
+          alert(JSON.stringify(res));
+        })
+        .catch(err => {
+          alert(JSON.stringify(err));
+        });
     }
   },
-  watch: {
-    // points() {
-    //   this.generatePoints();
-    // }
-  },
-  mounted() {
+  drawDemo() {
     let num = 0;
     this.generatePoints();
     let app = this;
@@ -162,6 +163,14 @@ export default {
       }
     };
     writePoint();
+  },
+  watch: {
+    // points() {
+    //   this.generatePoints();
+    // }
+  },
+  mounted() {
+    this.getBalloonData();
   }
 };
 </script>
