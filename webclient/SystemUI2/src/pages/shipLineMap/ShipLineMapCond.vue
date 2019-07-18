@@ -29,11 +29,17 @@ export default {
       selectedLineCode: ""
     };
   },
+  watch: {
+    selectedLineCode(currentValue) {
+      this.$store.commit("selectShipLine", currentValue);
+    }
+  },
   mounted() {
     let app = this;
     getLineCodeCollection()
       .then(res => {
         this.lineCodeList = res.data;
+        this.lineCodeList.push(2); //为了测试用的
       })
       .catch(() => {
         app.lineCodeList = [];
@@ -42,26 +48,6 @@ export default {
 };
 </script>
 <style scoped>
-/* .text {
-  font-size: 14px;
-}
-
-.item {
-  margin-bottom: 18px;
-}
-
-.clearfix:before,
-.clearfix:after {
-  display: table;
-  content: "";
-}
-.clearfix:after {
-  clear: both;
-}
-
-.box-card {
-  width: 480px;
-} */
 </style>
 
 

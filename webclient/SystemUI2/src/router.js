@@ -15,7 +15,7 @@ export default new Router({
         {
             path: '/map',
             name: 'map',
-            component: () => import('@/pages/Map')
+            component: () => import('@/pages/shipLineMap/ShipLineMapPanel')
         },
         {
             path: '/page1',
