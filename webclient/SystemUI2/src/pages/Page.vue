@@ -1,5 +1,5 @@
 <template>
-  <div>page</div>
+  <div>测试tab栏</div>
 </template>
 <script>
 export default {};

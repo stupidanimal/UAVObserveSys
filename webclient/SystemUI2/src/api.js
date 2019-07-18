@@ -22,3 +22,8 @@ export const getBalloonDataByBalloonCode = (balloonCode) => {
 }
 
 
+export const getShipLocation = (lineCode) => {
+    let url = `${host}ship_location?lineCode=${lineCode}`;
+    return axios.get(url)
+}
+

@@ -2,17 +2,17 @@
   <el-row>
     <el-col>
       <div class="block" v-bind:style="{height:style.height+'px'}">
-        <MapComp></MapComp>
+        <ShipLineMapComp></ShipLineMapComp>
       </div>
       <div class="condMenu">
-        <MapCond></MapCond>
+        <ShipLineMapCond></ShipLineMapCond>
       </div>
     </el-col>
   </el-row>
 </template>
 <script>
-import MapComp from "./components/MapComp";
-import MapCond from "./components/MapCond";
+import ShipLineMapComp from "./ShipLineMapComp";
+import ShipLineMapCond from "./ShipLineMapCond";
 export default {
   data() {
     return {
@@ -22,8 +22,8 @@ export default {
     };
   },
   components: {
-    MapComp,
-    MapCond
+    ShipLineMapComp, //地图组件
+    ShipLineMapCond //地图筛选条件
   },
   mounted() {
     let height = window.innerHeight;
