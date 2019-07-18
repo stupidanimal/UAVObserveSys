@@ -16,18 +16,29 @@
         :color="circle.color"
         :fillColor="circle.color"
         v-bind:key="index"
-      ></l-circle>
+      >
+        <l-popup :text="'测试点击'">
+          <!-- <div>测试内容</div> -->
+          <el-card>
+            <div slot="header" class="clearfix">{{circle.info.lineCode}}-{{circle.info.balloonCode}}</div>
+            <div>time:{{circle.info.timeStr}}</div>
+            <div>pre:{{circle.info.pre}}</div>
+            <div>temp:{{circle.info.temp}}</div>
+            <div>hum:{{circle.info.hum}}</div>
+          </el-card>
+        </l-popup>
+      </l-circle>
       <l-polyline :lat-lngs="points" :color="lineColor"></l-polyline>
     </l-map>
   </div>
-</template>
+</template>·
 <script>
 import { latLng } from "leaflet";
 import {
   LMap,
   LTileLayer,
   // LMarker,
-  // LPopup,
+  LPopup,
   // LTooltip,
   LCircleMarker,
   LPolyline
@@ -59,7 +70,8 @@ export default {
     "l-tile-layer": LTileLayer,
     "l-map": LMap,
     "l-circle": LCircleMarker,
-    "l-polyline": LPolyline
+    "l-polyline": LPolyline,
+    "l-popup": LPopup
   },
   methods: {
     zoomUpdate(zoom) {
@@ -83,7 +95,8 @@ export default {
           app.circles.push({
             center: p.point,
             color: app.circleColor,
-            radius: app.circleRadius
+            radius: app.circleRadius,
+            info: p
           });
           n++;
           setTimeout(drawPoint, 500);

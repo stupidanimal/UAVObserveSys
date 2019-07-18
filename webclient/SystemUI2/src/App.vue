@@ -2,7 +2,7 @@
   <div id="app">
     <el-container>
       <el-header>
-        <el-menu class="el-menu-demo" mode="horizontal" router>
+        <el-menu mode="horizontal" router>
           <!-- <el-menu-item>
             <el-image :src="'./assets/icon.png'"></el-image>
           </el-menu-item>-->
@@ -14,7 +14,7 @@
       <el-main>
         <router-view></router-view>
       </el-main>
-      <el-footer>footer</el-footer>
+      <el-footer>footer如果有需要的话可以加些内容，如果没有可以删除</el-footer>
     </el-container>
   </div>
 </template>
@@ -31,5 +31,9 @@ export default {
   width: 100%;
   margin: 0 auto;
   padding: 0 auto;
+}
+* {
+  font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
 }
 </style>
