@@ -1,29 +1,16 @@
-# app
+#Install
+安装nodejs
+安装yarn
 
-## Project setup
-```
-yarn install
-```
+当前文件夹打开控制台
+yarn install 安装模块
+yarn serve  启动服务
 
-### Compiles and hot-reloads for development
-```
-yarn run serve
-```
+#Note
+文档结构改了下，把与当前也页面相关的组件都放到该页面文件夹下，方便找。如果有公共的就放到外面。
 
-### Compiles and minifies for production
-```
-yarn run build
-```
+#Quest
+[*] 地图加载点的时候总是不显示，打开控制台的时候才显示出来，然后就正常了。
+[*] 需要改成ts版，和一坨插件版
 
-### Run your tests
-```
-yarn run test
-```
 
-### Lints and fixes files
-```
-yarn run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
