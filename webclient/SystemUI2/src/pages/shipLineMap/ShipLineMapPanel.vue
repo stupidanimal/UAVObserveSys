@@ -7,23 +7,30 @@
       <div class="condMenu">
         <ShipLineMapCond></ShipLineMapCond>
       </div>
+      <el-button type="danger" @click="displayDialog=true">测试</el-button>
     </el-col>
+    <el-dialog :visible.sync="displayDialog">
+      <ChartDialog></ChartDialog>
+    </el-dialog>
   </el-row>
 </template>
 <script>
 import ShipLineMapComp from "./ShipLineMapComp";
 import ShipLineMapCond from "./ShipLineMapCond";
+import ChartDialog from "./ChartDialog";
 export default {
   data() {
     return {
       style: {
         height: 0
-      }
+      },
+      displayDialog: false
     };
   },
   components: {
     ShipLineMapComp, //地图组件
-    ShipLineMapCond //地图筛选条件
+    ShipLineMapCond, //地图筛选条件
+    ChartDialog
   },
   mounted() {
     let height = window.innerHeight;
