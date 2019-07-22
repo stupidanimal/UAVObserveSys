@@ -57,8 +57,10 @@ export default {
     return {
       zoom: 8,
       currentZoom: 10,
-      center: latLng(104.56972, -7.50861),
-      url: "http://{s}.tile.osm.org/{z}/{x}/{y}.png",
+      center: latLng(-7.50861,104.56972),
+      url:
+        "//map.geoq.cn/ArcGIS/rest/services/ChinaOnlineStreetPurplishBlue/MapServer/tile/{z}/{y}/{x}",
+
       mapOptions: {
         zoomSnap: 0.5
       },
@@ -67,7 +69,8 @@ export default {
       circleRadius: 5,
       lineColor: "#FFFF00",
       circles: [], //所有的船舶出现点
-      points: [] //需要连线的点
+      points: [] ,//需要连线的点
+      targetPoint:null // TODO:[*] 19-07-21 当前选择的站位 obj
     };
   },
   components: {
@@ -131,7 +134,8 @@ export default {
         //递归延时顺序画点 //如果不需要完全可以直接画全部//不可以while因为没有settimeout效果
         if (n < bArr.length) {
           let p = bArr[n];
-          app.points.push(p.point);
+          app.points.push(p.point.reverse());
+          // app.points.push([p.point[1], p.point[0]]);
           app.circles.push({
             center: p.point,
             color: app.circleColor,

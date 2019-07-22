@@ -1,7 +1,8 @@
 <template>
   <el-row>
     <el-col>
-      <div class="block" v-bind:style="{height:style.height+'px'}">
+      <!-- <div class="block" v-bind:style="{height:style.height+'px'}"> -->
+      <div class="block" >
         <ShipLineMapComp></ShipLineMapComp>
       </div>
       <div class="condMenu">
@@ -26,8 +27,8 @@ export default {
     ShipLineMapCond //地图筛选条件
   },
   mounted() {
-    let height = window.innerHeight;
-    this.style.height = Math.ceil(height * 0.75);
+    // let height = window.innerHeight;
+    // this.style.height = Math.ceil(height * 0.75);
   }
 };
 </script>
@@ -37,7 +38,8 @@ export default {
   background: pink;
 }
 .block {
-  height: 80%;
+  /* height: 80%; */
+  height: 600px;
   background: pink;
 }
 .condMenu {
