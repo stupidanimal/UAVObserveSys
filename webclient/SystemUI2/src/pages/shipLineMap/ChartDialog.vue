@@ -3,7 +3,6 @@
     <div>Here will be chart</div>
     <div>
       <el-radio-group v-model="dataType" @change="typeChange">
-        <!-- <el-radio-button label="dew"></el-radio-button> -->
         <el-radio-button
           v-for="(name,index) in displayDataType"
           v-bind:label="name"
@@ -19,6 +18,7 @@
 <script>
 import Vue from "vue";
 import ECharts from "vue-echarts";
+import { getBalloonDataByBalloonCode } from "@/api";
 
 import "echarts/lib/chart/bar";
 import "echarts/lib/component/tooltip";
@@ -135,9 +135,10 @@ export default {
     "v-chart": ECharts
   },
   data() {
-    let data = fakeData.balloons;
-    data = data.sort(x => x.timeStamp);
-    let xdata = data.map(x => x.hum); //组装x轴
+    let data = [];
+    // let data = fakeData.balloons;
+    // data = data.sort(x => x.timeStamp);
+    // let xdata = data.map(x => x.hum); //组装x轴
 
     //初始化字典 可以拆分出去
     let displayDataLabelObj = {
@@ -201,12 +202,38 @@ export default {
       }
     };
   },
+  computed: {
+    balloonCode() {
+      return this.$store.state.balloonCode;
+    }
+  },
+  watch: {
+    balloonCode() {
+      let app = this;
+      getBalloonDataByBalloonCode.then(res => {
+        if (res.state == 200) {
+          let fullData = res.data;
+          let data = fullData.balloons;
+          app.balloons = data.sort(x => x.timeStamp);
+          app.drawChart();
+        }
+      });
+    }
+  },
   methods: {
     typeChange(labelName) {
       let propName = this.displayDataLabelObj[labelName]; //找到当前显示的属性
       //重新组装数组  ||可优化放进内存
       let ydata = this.data.map(x => x[propName]);
       this.chartOption.series[0].data = ydata;
+    },
+    drawChart() {
+      let data = this.balloons;
+      data = data.sort(x => x.timeStamp);
+      let xdata = data.map(x => x.hum); //组装x轴
+      let tmpPropName = this.displayDataLabelObj[this.displayDataType[0]];
+      let ydata = data.map(x => x[tmpPropName]);
+      this.dataType = this.displayDataType[0];
     }
   }
 };
@@ -217,6 +244,7 @@ export default {
   height: 100%;
 }
 .chartsFrame {
+  /* height: 600px; */
   height: 600px;
 }
 </style>

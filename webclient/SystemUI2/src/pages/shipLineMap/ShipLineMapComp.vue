@@ -15,6 +15,8 @@
         :radius="circle.radius"
         :color="circle.color"
         :fillColor="circle.color"
+        @click="handleClick(circle)"
+        :popupclose="true"
         v-bind:key="index"
       >
         <l-popup>
@@ -57,7 +59,7 @@ export default {
     return {
       zoom: 8,
       currentZoom: 10,
-      center: latLng(-7.50861,104.56972),
+      center: latLng(-7.50861, 104.56972),
       url:
         "//map.geoq.cn/ArcGIS/rest/services/ChinaOnlineStreetPurplishBlue/MapServer/tile/{z}/{y}/{x}",
 
@@ -69,8 +71,8 @@ export default {
       circleRadius: 5,
       lineColor: "#FFFF00",
       circles: [], //所有的船舶出现点
-      points: [] ,//需要连线的点
-      targetPoint:null // TODO:[*] 19-07-21 当前选择的站位 obj
+      points: [], //需要连线的点
+      targetPoint: null // TODO:[*] 19-07-21 当前选择的站位 obj
     };
   },
   components: {
@@ -98,6 +100,9 @@ export default {
     },
     centerUpdate(center) {
       this.currentCenter = center;
+    },
+    handleClick(circle) {
+      this.$store.commit("choiceShipPoint", circle.info.balloonCode);
     },
     // setCenter(circles) {
     //   //重新校准center避免点跑到显示不见的地方..貌似不起作用，这tm有bug

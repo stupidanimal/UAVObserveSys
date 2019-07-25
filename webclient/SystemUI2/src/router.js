@@ -26,6 +26,10 @@ export default new Router({
             path: '/page2',
             name: 'page2',
             component: () => import('@/pages/Page2')
+        }, {
+            path: '/demo',
+            name: 'demo',
+            component: () => import('@/pages/shipLineMap/ChartDialog')
         }
     ]
 });
