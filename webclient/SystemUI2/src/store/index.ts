@@ -7,8 +7,8 @@ Vue.use(Vuex)
 export default new Vuex.Store({
     state: {
         shipLineCode: -1,
-        balloonCode: "",
-    },
+        balloonCode: "-111111",
+    }, 
     mutations: {
         selectShipLine(state, selectCode) { //设置地图上shipline筛选条件
             state.shipLineCode = selectCode

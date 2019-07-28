@@ -1,6 +1,5 @@
 <template>
   <div>
-    <div>Here will be chart</div>
     <div>
       <el-radio-group v-model="dataType" @change="typeChange">
         <el-radio-button
@@ -28,108 +27,6 @@ import "echarts/lib/component/polar";
 
 Vue.component("v-chart", ECharts);
 
-let fakeData = {
-  balloonCode: "15188603",
-  lineCode: null,
-  balloons: [
-    {
-      lineCode: "1",
-      balloonCode: "15188603",
-      minuteOrder: 0,
-      secondOrder: 0,
-      timeStamp: 1469080741,
-      timeStr: "2016-07-21 13:59:01",
-      pre: 16.0,
-      temp: 28.39,
-      hum: 76.8,
-      qpm: 16.0,
-      dir: 49.7,
-      vel: 0.21,
-      dew: 23.9,
-      dis: 0.03,
-      rise: 0.0,
-      alt: -1.0,
-      point: [104.51253, -7.505]
-    },
-    {
-      lineCode: "1",
-      balloonCode: "15188603",
-      minuteOrder: 1,
-      secondOrder: 0,
-      timeStamp: 1469080801,
-      timeStr: "2016-07-21 14:00:01",
-      pre: 13.9,
-      temp: 28.16,
-      hum: 75.1,
-      qpm: 13.8,
-      dir: 354.8,
-      vel: 1.32,
-      dew: 23.3,
-      dis: 0.03,
-      rise: -0.1,
-      alt: -1.0,
-      point: [104.51279, -7.50521]
-    },
-    {
-      lineCode: "1",
-      balloonCode: "15188603",
-      minuteOrder: 2,
-      secondOrder: 0,
-      timeStamp: 1469080861,
-      timeStr: "2016-07-21 14:01:01",
-      pre: 260.9,
-      temp: 25.92,
-      hum: 79.8,
-      qpm: 260.2,
-      dir: 345.9,
-      vel: 6.07,
-      dew: 22.2,
-      dis: 0.38,
-      rise: 4.7,
-      alt: -1.0,
-      point: [104.51331, -7.50818]
-    },
-    {
-      lineCode: "1",
-      balloonCode: "15188603",
-      minuteOrder: 3,
-      secondOrder: 0,
-      timeStamp: 1469080921,
-      timeStr: "2016-07-21 14:02:01",
-      pre: 569.1,
-      temp: 23.76,
-      hum: 78.6,
-      qpm: 567.6,
-      dir: 328.0,
-      vel: 10.08,
-      dew: 19.8,
-      dis: 0.95,
-      rise: 4.1,
-      alt: -1.0,
-      point: [104.5155, -7.51227]
-    },
-    {
-      lineCode: "1",
-      balloonCode: "15188603",
-      minuteOrder: 4,
-      secondOrder: 0,
-      timeStamp: 1469080981,
-      timeStr: "2016-07-21 14:03:01",
-      pre: 797.5,
-      temp: 23.44,
-      hum: 61.8,
-      qpm: 795.3,
-      dir: 327.0,
-      vel: 11.18,
-      dew: 15.7,
-      dis: 1.6,
-      rise: 3.4,
-      alt: -1.0,
-      point: [104.51891, -7.51735]
-    }
-  ]
-};
-
 export default {
   components: {
     "v-chart": ECharts
@@ -138,7 +35,7 @@ export default {
     let data = [];
     // let data = fakeData.balloons;
     // data = data.sort(x => x.timeStamp);
-    // let xdata = data.map(x => x.hum); //组装x轴
+    let xdata = data.map(x => x.hum); //组装x轴
 
     //初始化字典 可以拆分出去
     let displayDataLabelObj = {
@@ -208,16 +105,24 @@ export default {
     }
   },
   watch: {
-    balloonCode() {
-      let app = this;
-      getBalloonDataByBalloonCode.then(res => {
-        if (res.state == 200) {
+    balloonCode: {
+      //做请求并展示echarts
+      immediate: true,
+      handler: function() {
+        let app = this;
+        getBalloonDataByBalloonCode(this.balloonCode).then(res => {
+          // console.log(res.state);
+          // if (res.status == 200) {
           let fullData = res.data;
           let data = fullData.balloons;
-          app.balloons = data.sort(x => x.timeStamp);
+          app.data = data.sort(x => x.timeStamp);
           app.drawChart();
-        }
-      });
+          // }
+        });
+        // .catch(err => {
+        //   console.error(err);
+        // });
+      }
     }
   },
   methods: {
@@ -228,12 +133,12 @@ export default {
       this.chartOption.series[0].data = ydata;
     },
     drawChart() {
-      let data = this.balloons;
-      data = data.sort(x => x.timeStamp);
-      let xdata = data.map(x => x.hum); //组装x轴
+      let xdata = this.data.map(x => x.hum); //组装x轴
       let tmpPropName = this.displayDataLabelObj[this.displayDataType[0]];
-      let ydata = data.map(x => x[tmpPropName]);
+      let ydata = this.data.map(x => x[tmpPropName]);
       this.dataType = this.displayDataType[0];
+      this.chartOption.xAxis.data = xdata;
+      this.chartOption.series[0].data = ydata;
     }
   }
 };
@@ -241,7 +146,7 @@ export default {
 <style scoped>
 .echarts {
   width: 100%;
-  height: 100%;
+  height: 600px;
 }
 .chartsFrame {
   /* height: 600px; */

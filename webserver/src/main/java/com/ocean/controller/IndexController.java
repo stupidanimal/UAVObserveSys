@@ -25,6 +25,7 @@ public class IndexController {
     @Autowired
     ShipLocationService shipLocationService;
 
+
     @GetMapping("/balloon")
     public Object balloon(String balloonCode,String interval) {
         BalloonResult balloonResult = new BalloonResult();
@@ -42,7 +43,6 @@ public class IndexController {
     }
 
 
-    @RequestMapping(method=RequestMethod.GET)
     @GetMapping("/lineCodeCollection")
     public Object lineCodeCollection(){
          java.util.List<String> list= shipLocationService.findAllLineCode();

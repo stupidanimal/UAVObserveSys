@@ -2,15 +2,17 @@
   <el-row>
     <el-col>
       <!-- <div class="block" v-bind:style="{height:style.height+'px'}"> -->
-      <div class="block" >
-        <ShipLineMapComp></ShipLineMapComp>
+      <div class="block">
+        <!-- 给子对象model的开关 -->
+        <ShipLineMapComp @change-dialog-model="dialogTurn()"></ShipLineMapComp>
       </div>
       <div class="condMenu">
         <ShipLineMapCond></ShipLineMapCond>
       </div>
-      <el-button type="danger" @click="displayDialog=true">测试</el-button>
+      <!-- <el-button type="danger" @click="displayDialog=true">测试</el-button> -->
     </el-col>
     <el-dialog :visible.sync="displayDialog">
+      <!-- <ChartDialog :turnModel="turnModel"></ChartDialog> -->
       <ChartDialog></ChartDialog>
     </el-dialog>
   </el-row>
@@ -27,6 +29,12 @@ export default {
       },
       displayDialog: false
     };
+  },
+  methods: {
+    dialogTurn() {
+      //显示或关闭dialog
+      this.displayDialog = !this.displayDialog;
+    }
   },
   components: {
     ShipLineMapComp, //地图组件

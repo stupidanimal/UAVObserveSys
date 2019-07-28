@@ -19,8 +19,8 @@
         :popupclose="true"
         v-bind:key="index"
       >
-        <l-popup>
-          <!-- 循环显示位置 -->
+        <!-- <l-popup>
+          
           <el-card>
             <div slot="header" class="clearfix">{{circle.info.lineCode}}-{{circle.info.balloonCode}}</div>
             <div>avgRise：{{circle.info.avgRise}}</div>
@@ -34,7 +34,7 @@
             <div>point：{{circle.info.point}}</div>
             <div>startTime：{{circle.info.startTime}}</div>
           </el-card>
-        </l-popup>
+        </l-popup>-->
       </l-circle>
 
       <!--连线-->
@@ -47,7 +47,7 @@ import { latLng } from "leaflet";
 import {
   LMap,
   LTileLayer,
-  LPopup,
+  // LPopup,
   LCircleMarker,
   LPolyline
 } from "vue2-leaflet";
@@ -79,8 +79,8 @@ export default {
     "l-tile-layer": LTileLayer, //组件重命名，虽然我不知道为什么要这么做，但官方就是这样给的
     "l-map": LMap,
     "l-circle": LCircleMarker,
-    "l-polyline": LPolyline,
-    "l-popup": LPopup
+    "l-polyline": LPolyline
+    // "l-popup": LPopup
   },
   computed: {
     shipLineCode() {
@@ -89,9 +89,11 @@ export default {
     }
   },
   watch: {
-    shipLineCode() {
-      //监听变化生成路径和点
-      this.getBalloonData();
+    shipLineCode: {
+      immediate: true, //监听变化生成路径和点
+      handler: function() {
+        this.getBalloonData();
+      }
     }
   },
   methods: {
@@ -103,6 +105,8 @@ export default {
     },
     handleClick(circle) {
       this.$store.commit("choiceShipPoint", circle.info.balloonCode);
+
+      this.$emit("change-dialog-model", 1);
     },
     // setCenter(circles) {
     //   //重新校准center避免点跑到显示不见的地方..貌似不起作用，这tm有bug
