@@ -12,6 +12,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.StringUtils;
 
 import java.io.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -32,10 +34,10 @@ public class FileImportTest {
     @Autowired
     BalloonService balloonService;
 
-    private void saveBalloon(String lineStr,ShipLocationVo shipLocationVo){
+    private void saveBalloon(String lineStr, ShipLocationVo shipLocationVo) {
         String[] lines = lineStr.split(" ");
         List<String> list = new ArrayList<>();
-        Collections.addAll(list,lines);
+        Collections.addAll(list, lines);
         list.removeIf(StringUtils::isEmpty);
         BalloonVo balloonVo = new BalloonVo();
         balloonVo.setMinuteOrder(Integer.parseInt(list.get(0)));
@@ -54,7 +56,7 @@ public class FileImportTest {
         balloonVo.setRise(Float.parseFloat(list.get(11)));
         Double lat = Double.parseDouble(list.get(12));
         Double lng = Double.parseDouble(list.get(13));
-        Double[] point = {lat,lng};
+        Double[] point = { lat, lng };
         balloonVo.setPoint(point);
         balloonVo.setPre(Float.parseFloat(list.get(14)));
         balloonVo.setBalloonCode(shipLocationVo.getBalloonCode());
@@ -64,38 +66,38 @@ public class FileImportTest {
 
     private void saveData(String lineStr, int lineNum, ShipLocationVo shipLocationVo) {
         switch (lineNum) {
-            case 1:
-                shipLocationVo.setBalloonCode(getVal(lineStr));
-                break;
-            case 2:
-                String val = getVal(lineStr, "\\):");
-                String date = val.split(" ")[0];
-                shipLocationVo.setStartTime(date2time(val));
-                shipLocationVo.setDate(date);
-                break;
-            case 3:
-                shipLocationVo.setEndTime(date2time(getVal(lineStr, "\\):")));
-                break;
-            case 4:
-                shipLocationVo.setMaxHeightTime(date2time(getVal(lineStr, "\\):")));
-                break;
-            case 5:
-                shipLocationVo.setMaxHeight(Float.parseFloat(getVal(lineStr)));
-                break;
-            case 6:
-                shipLocationVo.setAvgRise(Float.parseFloat(getVal(lineStr)));
-                break;
-            case 7:
-                shipLocationVo.setLocationName(getVal(lineStr));
-                break;
-            case 8:
-                String[] latlng = getVal(lineStr).split("  ");
-                double lat = Double.parseDouble(latlng[0]);
-                double lng = Double.parseDouble(latlng[1]);
-                Double[] point = {lat, lng};
-                shipLocationVo.setPoint(point);
-                shipLocationService.saveShipLocationVo(shipLocationVo);
-                break;
+        case 1:
+            shipLocationVo.setBalloonCode(getVal(lineStr));
+            break;
+        case 2:
+            String val = getVal(lineStr, "\\):");
+            String date = val.split(" ")[0];
+            shipLocationVo.setStartTime(date2time(val));
+            shipLocationVo.setDate(date);
+            break;
+        case 3:
+            shipLocationVo.setEndTime(date2time(getVal(lineStr, "\\):")));
+            break;
+        case 4:
+            shipLocationVo.setMaxHeightTime(date2time(getVal(lineStr, "\\):")));
+            break;
+        case 5:
+            shipLocationVo.setMaxHeight(Float.parseFloat(getVal(lineStr)));
+            break;
+        case 6:
+            shipLocationVo.setAvgRise(Float.parseFloat(getVal(lineStr)));
+            break;
+        case 7:
+            shipLocationVo.setLocationName(getVal(lineStr));
+            break;
+        case 8:
+            String[] latlng = getVal(lineStr).split("  ");
+            double lat = Double.parseDouble(latlng[0]);
+            double lng = Double.parseDouble(latlng[1]);
+            Double[] point = { lat, lng };
+            shipLocationVo.setPoint(point);
+            shipLocationService.saveShipLocationVo(shipLocationVo);
+            break;
         }
     }
 
@@ -117,8 +119,32 @@ public class FileImportTest {
         return lineStr.split(spilt)[1].trim();
     }
 
+    private Path[] getFiles(String path) {
+        // 获取指定目录下的所有文件名称
+        File file = new File(path);
+        File[] array = file.listFiles();
+        String[] filesName = new String[array.length];
+        Path[] fullpaths = new Path[array.length];
+        for (int i = 0; i < array.length; i++) {
+            if (array[i].isFile()) {
+                // filesName.add(array[i].getName());
+                Path pathTemp = Paths.get(path, array[i].getName());
+                fullpaths[i] = pathTemp;
+                // fullpaths.add(pathTemp);
+            } else {
+                // fullpaths[i]='';
+            }
+        }
+        return fullpaths;
+
+    }
+
     @Test
     public void fileImport() {
+        // 获取指定目录下的全部文件
+        String TargetPath = "D:\\01proj\\UAVObserveSys\\data\\1";
+        // 获取该目录下的全部文件
+        Path[] files = getFiles(TargetPath);
         File file = new File("../data/1/201607211359_1s.txt");
         if (file.exists()) {
             InputStream is = null;
@@ -136,13 +162,13 @@ public class FileImportTest {
                     System.out.println(line);
                     tmp++;
                     if (tmp <= 8) {
-                        saveData(line,tmp,shipLocationVo);
-                    }else{
-                        if(line.trim().length()>1) {
+                        saveData(line, tmp, shipLocationVo);
+                    } else {
+                        if (line.trim().length() > 1) {
                             if (!"0123456789".contains(line.trim().substring(0, 1))) {
                                 System.out.println("不是这行");
                             } else {
-                                saveBalloon(line,shipLocationVo);
+                                saveBalloon(line, shipLocationVo);
                             }
                         }
                     }
