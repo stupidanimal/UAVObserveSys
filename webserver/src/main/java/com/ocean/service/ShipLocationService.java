@@ -35,4 +35,8 @@ public class ShipLocationService {
         }
         return list;
     }
+
+    public void delAll(){
+        mongoTemplate.dropCollection("ship_location");
+    }
 }
