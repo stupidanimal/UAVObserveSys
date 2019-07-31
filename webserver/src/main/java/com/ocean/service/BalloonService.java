@@ -26,4 +26,8 @@ public class BalloonService {
         Query query = new Query(Criteria.where("balloonCode").is(bCode).and("secondOrder").is(0));
         return mongoTemplate.find(query,BalloonVo.class);
     }
+
+    public void delAll(){
+        mongoTemplate.dropCollection("balloon");
+    }
 }

@@ -12,9 +12,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.StringUtils;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -34,31 +34,44 @@ public class FileImportTest {
     @Autowired
     BalloonService balloonService;
 
-    private void saveBalloon(String lineStr, ShipLocationVo shipLocationVo) {
-        String[] lines = lineStr.split(" ");
-        List<String> list = new ArrayList<>();
-        Collections.addAll(list, lines);
-        list.removeIf(StringUtils::isEmpty);
+    @Test
+    public void fileImport() {
+        //导入前先清空站点数据和气球数据
+        balloonService.delAll();
+        shipLocationService.delAll();
+        // 获取指定目录下的全部文件
+        String TargetPath = "../data/1/";
+//        String TargetPath = "D:\\01proj\\UAVObserveSys\\data\\1";
+        // 获取该目录下的全部文件
+        Path[] files = getFiles(TargetPath);
+        for(Path path:files){
+            //根据文件导入
+            fileImport(path.toString());
+        }
+
+    }
+
+    private void saveBalloon(List<String> list, ShipLocationVo shipLocationVo) {
         BalloonVo balloonVo = new BalloonVo();
-        balloonVo.setMinuteOrder(Integer.parseInt(list.get(0)));
-        balloonVo.setSecondOrder(Integer.parseInt(list.get(1)));
+        balloonVo.setMinuteOrder(Integer.parseInt(getNumByDefaultVal(list.get(0))));
+        balloonVo.setSecondOrder(Integer.parseInt(getNumByDefaultVal(list.get(1))));
         String timeStr = shipLocationVo.getDate() + " " + list.get(2);
         balloonVo.setTimeStamp(date2time(timeStr));
         balloonVo.setTimeStr(timeStr);
-        balloonVo.setPre(Float.parseFloat(list.get(3)));
-        balloonVo.setTemp(Float.parseFloat(list.get(4)));
-        balloonVo.setHum(Float.parseFloat(list.get(5)));
-        balloonVo.setQpm(Float.parseFloat(list.get(6)));
-        balloonVo.setDir(Float.parseFloat(list.get(7)));
-        balloonVo.setVel(Float.parseFloat(list.get(8)));
-        balloonVo.setDew(Float.parseFloat(list.get(9)));
-        balloonVo.setDis(Float.parseFloat(list.get(10)));
-        balloonVo.setRise(Float.parseFloat(list.get(11)));
-        Double lat = Double.parseDouble(list.get(12));
-        Double lng = Double.parseDouble(list.get(13));
+        balloonVo.setPre(Float.parseFloat(getNumByDefaultVal(list.get(3))));
+        balloonVo.setTemp(Float.parseFloat(getNumByDefaultVal(list.get(4))));
+        balloonVo.setHum(Float.parseFloat(getNumByDefaultVal(list.get(5))));
+        balloonVo.setQpm(Float.parseFloat(getNumByDefaultVal(list.get(6))));
+        balloonVo.setDir(Float.parseFloat(getNumByDefaultVal(list.get(7))));
+        balloonVo.setVel(Float.parseFloat(getNumByDefaultVal(list.get(8))));
+        balloonVo.setDew(Float.parseFloat(getNumByDefaultVal(list.get(9))));
+        balloonVo.setDis(Float.parseFloat(getNumByDefaultVal(list.get(10))));
+        balloonVo.setRise(Float.parseFloat(getNumByDefaultVal(list.get(11))));
+        Double lat = Double.parseDouble(getNumByDefaultVal(list.get(12)));
+        Double lng = Double.parseDouble(getNumByDefaultVal(list.get(13)));
         Double[] point = { lat, lng };
         balloonVo.setPoint(point);
-        balloonVo.setPre(Float.parseFloat(list.get(14)));
+        balloonVo.setPre(Float.parseFloat(getNumByDefaultVal(list.get(14))));
         balloonVo.setBalloonCode(shipLocationVo.getBalloonCode());
         balloonVo.setLineCode(shipLocationVo.getLineCode());
         balloonService.saveBalloon(balloonVo);
@@ -81,8 +94,7 @@ public class FileImportTest {
         case 4:
             shipLocationVo.setMaxHeightTime(date2time(getVal(lineStr, "\\):")));
             break;
-        case 5:
-            shipLocationVo.setMaxHeight(Float.parseFloat(getVal(lineStr)));
+        case 5: shipLocationVo.setMaxHeight(Float.parseFloat(getVal(lineStr)));
             break;
         case 6:
             shipLocationVo.setAvgRise(Float.parseFloat(getVal(lineStr)));
@@ -112,7 +124,16 @@ public class FileImportTest {
     }
 
     private String getVal(String lineStr) {
-        return lineStr.split(":")[1].trim();
+        String result = lineStr.split(":")[1].trim();
+        return getNumByDefaultVal(result);
+    }
+
+    private String getNumByDefaultVal(String in){
+        if(StringUtils.isEmpty(in) || in.contains("//")){
+            return "-99.99";
+        } else {
+            return in;
+        }
     }
 
     private String getVal(String lineStr, String spilt) {
@@ -139,13 +160,8 @@ public class FileImportTest {
 
     }
 
-    @Test
-    public void fileImport() {
-        // 获取指定目录下的全部文件
-        String TargetPath = "D:\\01proj\\UAVObserveSys\\data\\1";
-        // 获取该目录下的全部文件
-        Path[] files = getFiles(TargetPath);
-        File file = new File("../data/1/201607211359_1s.txt");
+    private void fileImport(String path){
+        File file = new File(path);
         if (file.exists()) {
             InputStream is = null;
             Reader reader = null;
@@ -158,7 +174,7 @@ public class FileImportTest {
                 int tmp = 0;
                 ShipLocationVo shipLocationVo = new ShipLocationVo();
                 shipLocationVo.setLineCode("1");
-                while ((line = bufferedReader.readLine()) != null && tmp < 300) {
+                while ((line = bufferedReader.readLine()) != null) {
                     System.out.println(line);
                     tmp++;
                     if (tmp <= 8) {
@@ -168,7 +184,15 @@ public class FileImportTest {
                             if (!"0123456789".contains(line.trim().substring(0, 1))) {
                                 System.out.println("不是这行");
                             } else {
-                                saveBalloon(line, shipLocationVo);
+                                String[] lines = line.split(" ");
+                                List<String> list = new ArrayList<>();
+                                Collections.addAll(list, lines);
+                                list.removeIf(StringUtils::isEmpty);
+                                if(list.size() == 15) {
+                                    saveBalloon(list, shipLocationVo);
+                                }else{
+                                    System.out.println("第" + tmp + "行数据有问题!");
+                                }
                             }
                         }
                     }
@@ -195,4 +219,6 @@ public class FileImportTest {
             }
         }
     }
+
+
 }
