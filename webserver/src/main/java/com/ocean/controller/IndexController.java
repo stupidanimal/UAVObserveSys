@@ -7,14 +7,15 @@ import com.ocean.service.ShipLocationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author xingzhe
  * @date 2019-07-11
  */
+
 @RestController
+@CrossOrigin
 public class IndexController {
     private final static Logger logger = LoggerFactory.getLogger(IndexController.class);
 
@@ -23,6 +24,7 @@ public class IndexController {
 
     @Autowired
     ShipLocationService shipLocationService;
+
 
     @GetMapping("/balloon")
     public Object balloon(String balloonCode,String interval) {
@@ -39,4 +41,15 @@ public class IndexController {
         shipLocationResult.setShipLocationVos(shipLocationService.findByLineCode(lineCode));
         return shipLocationResult;
     }
+
+
+    @GetMapping("/lineCodeCollection")
+    public Object lineCodeCollection(){
+         java.util.List<String> list= shipLocationService.findAllLineCode();
+        return list;
+    }
+
+
 }
+
+

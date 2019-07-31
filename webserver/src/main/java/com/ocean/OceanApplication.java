@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
  * @description
  * @update 2014年6月20日 上午10:48:42
  */
+
 @SpringBootApplication(exclude={DataSourceAutoConfiguration.class})
 public class OceanApplication {
 
