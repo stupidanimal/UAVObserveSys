@@ -27,3 +27,8 @@ export const getShipLocation = (lineCode) => {
     return axios.get(url)
 }
 
+
+export const getBalloonByDateRange = (dateStartStr, dateEndStr) => {
+    let url = `${host}getBalloonByDateRange?dateStartStr=${dateStartStr}&dateEndStr=${dateEndStr}`
+    return axios.get(url)
+}

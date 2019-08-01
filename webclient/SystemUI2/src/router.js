@@ -30,6 +30,11 @@ export default new Router({
             path: '/demo',
             name: 'demo',
             component: () => import('@/pages/shipLineMap/ChartDialog')
+        },
+        {
+            path: '/balloonSearch',
+            name: 'balloonSearch',
+            component: () => import('@/pages/tableSearch/balloonSearch')
         }
     ]
 });

@@ -7,7 +7,7 @@
             <el-image :src="'./assets/icon.png'"></el-image>
           </el-menu-item>-->
           <el-menu-item index="/map">Map</el-menu-item>
-          <el-menu-item index="/page1">Menu1</el-menu-item>
+          <el-menu-item index="/balloonSearch">Menu1</el-menu-item>
           <el-menu-item index="/page2">Menu2</el-menu-item>
         </el-menu>
       </el-header>
